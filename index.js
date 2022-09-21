@@ -7,7 +7,6 @@ const speciesFilter = document.getElementById("species");
 const statusFilter = document.getElementById("status");
 const search = document.getElementById("search");
 
-
 const filterMap = {
   gender: genderFilter,
   status: statusFilter,
@@ -108,6 +107,8 @@ const createOptionNodes = (filterOptions, appendToElement) => {
   selectAllOption.setAttribute("value", "all");
   const optionText = document.createTextNode(SELECT_ALL_TEXT);
   selectAllOption.appendChild(optionText);
+  console.log("selectAllOption", selectAllOption);
+  console.log("appendToElement", appendToElement);
   appendToElement.appendChild(selectAllOption);
 
   filterOptions.forEach((option) => {
@@ -123,9 +124,40 @@ const createOptionNodes = (filterOptions, appendToElement) => {
 
 const createOptions = () => {
   const options = getOptions();
-  for (const optionType in options) {
-    createOptionNodes(options[optionType], filterMap[optionType]);
-  }
+
+  let genderOptions = [];
+  let statusOptions = [];
+  let speciesOptions = [];
+
+  options.gender.forEach((option) => {
+    if (!genderOptions.includes(option)) {
+      genderOptions.push(option);
+    }
+  });
+
+  options.status.forEach((option) => {
+    if (!statusOptions.includes(option)) {
+      statusOptions.push(option);
+    }
+  });
+
+  options.species.forEach((option) => {
+    if (!speciesOptions.includes(option)) {
+      speciesOptions.push(option);
+    }
+  });
+
+  createOptionNodes(genderOptions, filterMap.gender);
+  createOptionNodes(statusOptions, filterMap.status);
+  createOptionNodes(speciesOptions, filterMap.species);
+
+ 
+  // for (const optionType in options) {
+  //   console.log("optionType ",optionType);
+  //   console.log("options[optionType]",options[optionType]);
+  //   console.log("filterMap[optionType]", filterMap[optionType]);
+  //   createOptionNodes(options[optionType], filterMap[optionType]);
+  // }
 };
 
 createOptions();
@@ -185,7 +217,6 @@ const addEventListenerToRemoveButtons = () => {
 const createCards = () => {
   cleanCardContainer();
   console.log("inside createCards function");
-  
 
   let filtered = [...characters];
 

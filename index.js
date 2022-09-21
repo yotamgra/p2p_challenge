@@ -7,6 +7,7 @@ const speciesFilter = document.getElementById("species");
 const statusFilter = document.getElementById("status");
 const search = document.getElementById("search");
 
+
 const filterMap = {
   gender: genderFilter,
   status: statusFilter,
@@ -23,6 +24,7 @@ let chosenIds = [];
 /* ADD/REMOVE CARDS */
 
 const printCards = (characters) => {
+  console.log("inside printCards function");
   characters.forEach((character) => {
     const { id, name, image, status, species, gender, points } = character;
     const card = document.createElement("div");
@@ -182,6 +184,8 @@ const addEventListenerToRemoveButtons = () => {
 // CREATE CARDS
 const createCards = () => {
   cleanCardContainer();
+  console.log("inside createCards function");
+  
 
   let filtered = [...characters];
 
@@ -214,11 +218,13 @@ const createCards = () => {
     addEventListenerToRemoveButtons();
     return;
   }
-
+  console.log("inside createCards function before calling  printCards");
   printCards(characters);
   addEventListenerToChooseButtons();
   addEventListenerToRemoveButtons();
 };
+// createCards()
+printCards(characters);
 
 const chooseCharacter = (e) => {
   chosenIds.push(parseInt(e.target.id));

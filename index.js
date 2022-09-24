@@ -107,8 +107,8 @@ const createOptionNodes = (filterOptions, appendToElement) => {
   selectAllOption.setAttribute("value", "all");
   const optionText = document.createTextNode(SELECT_ALL_TEXT);
   selectAllOption.appendChild(optionText);
-  console.log("selectAllOption", selectAllOption);
-  console.log("appendToElement", appendToElement);
+  // console.log("selectAllOption", selectAllOption);
+  // console.log("appendToElement", appendToElement);
   appendToElement.appendChild(selectAllOption);
 
   filterOptions.forEach((option) => {
@@ -151,7 +151,6 @@ const createOptions = () => {
   createOptionNodes(statusOptions, filterMap.status);
   createOptionNodes(speciesOptions, filterMap.species);
 
- 
   // for (const optionType in options) {
   //   console.log("optionType ",optionType);
   //   console.log("options[optionType]",options[optionType]);
@@ -198,6 +197,12 @@ const createChosenCards = (chosenIds) => {
   });
 };
 
+const chooseCharacter = (e) => {
+  chosenIds.push(parseInt(e.target.id));
+  createChosenCards(chosenIds);
+  createCards();
+};
+
 // EVENT LISTENERS
 const addEventListenerToChooseButtons = () => {
   const chooseButtons = document.getElementsByClassName("choose-button");
@@ -220,17 +225,26 @@ const createCards = () => {
 
   let filtered = [...characters];
 
-  filtered = filtered.filter(
-    (character) => character.gender === genderFilter.value
-  );
+  filtered = filtered.filter((character) => {
+    if (genderFilter.value === "all") {
+      return true;
+    }
+    return character.gender === genderFilter.value;
+  });
 
-  filtered = filtered.filter(
-    (character) => character.status === statusFilter.value
-  );
+  filtered = filtered.filter((character) => {
+    if (statusFilter.value === "all") {
+      return true;
+    }
+    return character.status === statusFilter.value;
+  });
 
-  filtered = filtered.filter(
-    (character) => character.species === speciesFilter.value
-  );
+  filtered = filtered.filter((character) => {
+    if (speciesFilter.value === "all") {
+      return true;
+    }
+    return character.species === speciesFilter.value;
+  });
 
   filtered = filtered.filter((character) =>
     character.name.toLowerCase().includes(search.value.toLowerCase())
@@ -249,19 +263,15 @@ const createCards = () => {
     addEventListenerToRemoveButtons();
     return;
   }
-  console.log("inside createCards function before calling  printCards");
-  printCards(characters);
+  // console.log("inside createCards function before calling  printCards");
+  printCards(filtered);
   addEventListenerToChooseButtons();
   addEventListenerToRemoveButtons();
 };
-// createCards()
+createCards();
 printCards(characters);
 
-const chooseCharacter = (e) => {
-  chosenIds.push(parseInt(e.target.id));
-  createChosenCards(chosenIds);
-  createCards();
-};
+
 
 const removeCharacter = (e) => {
   chosenIds = chosenIds.filter(

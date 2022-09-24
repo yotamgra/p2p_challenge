@@ -25,7 +25,7 @@ let filtered = [...characters];
 /* ADD/REMOVE CARDS */
 
 const printCards = (characters) => {
-  console.log("inside printCards function");
+  // console.log("inside printCards function");
   characters.forEach((character) => {
     const { id, name, image, status, species, gender, points } = character;
     const card = document.createElement("div");
@@ -191,7 +191,8 @@ const createChosenCards = (chosenIds) => {
     button.setAttribute("id", chosen.id);
     button.appendChild(textButton);
 
-    card.appendChild(avatar);chooseCharacter
+    card.appendChild(avatar);
+    chooseCharacter;
     card.appendChild(textElement);
     card.appendChild(button);
 
@@ -200,12 +201,10 @@ const createChosenCards = (chosenIds) => {
 };
 
 const chooseCharacter = (e) => {
-  
-  console.log("e.target.id", e.target.id);
   chosenIds.push(parseInt(e.target.id));
   createChosenCards(chosenIds);
   //  remove the choosen character from the list
-  filtered =filtered.filter(character => character.id != e.target.id);
+  filtered = filtered.filter((character) => character.id != e.target.id);
   printCards(filtered);
   createCards();
 };
@@ -220,17 +219,16 @@ const addEventListenerToChooseButtons = () => {
 
 const addEventListenerToRemoveButtons = () => {
   const chooseButtons = document.getElementsByClassName("remove-button");
+  console.log("chooseButtons", chooseButtons);
   Array.from(chooseButtons).forEach((button) => {
-    button.addEventListener("click", () => {});
+    button.addEventListener("click", removeCharacter);
   });
 };
 
 // CREATE CARDS
 const createCards = () => {
   cleanCardContainer();
-  console.log("inside createCards function");
-
-  
+  // console.log("inside createCards function");
 
   filtered = filtered.filter((character) => {
     if (genderFilter.value === "all") {
@@ -277,8 +275,6 @@ const createCards = () => {
 };
 createCards();
 printCards(characters);
-
-
 
 const removeCharacter = (e) => {
   chosenIds = chosenIds.filter(

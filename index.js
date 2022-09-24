@@ -20,6 +20,8 @@ const SELECT_ALL_TEXT = "Select all";
 /* Variables */
 let chosenIds = [];
 
+let filtered = [...characters];
+
 /* ADD/REMOVE CARDS */
 
 const printCards = (characters) => {
@@ -189,7 +191,7 @@ const createChosenCards = (chosenIds) => {
     button.setAttribute("id", chosen.id);
     button.appendChild(textButton);
 
-    card.appendChild(avatar);
+    card.appendChild(avatar);chooseCharacter
     card.appendChild(textElement);
     card.appendChild(button);
 
@@ -198,8 +200,13 @@ const createChosenCards = (chosenIds) => {
 };
 
 const chooseCharacter = (e) => {
+  
+  console.log("e.target.id", e.target.id);
   chosenIds.push(parseInt(e.target.id));
   createChosenCards(chosenIds);
+  //  remove the choosen character from the list
+  filtered =filtered.filter(character => character.id != e.target.id);
+  printCards(filtered);
   createCards();
 };
 
@@ -223,7 +230,7 @@ const createCards = () => {
   cleanCardContainer();
   console.log("inside createCards function");
 
-  let filtered = [...characters];
+  
 
   filtered = filtered.filter((character) => {
     if (genderFilter.value === "all") {

@@ -230,26 +230,36 @@ const createCards = () => {
   cleanCardContainer();
   // console.log("inside createCards function");
 
-  filtered = filtered.filter((character) => {
-    if (genderFilter.value === "all") {
-      return true;
-    }
-    return character.gender === genderFilter.value;
-  });
+  filtered = filtered.filter(
+    (character) =>
+      (genderFilter.value === "all" ||
+        character.gender === genderFilter.value) &&
+      (statusFilter.value === "all" ||
+        character.status === statusFilter.value) &&
+      (speciesFilter.value === "all" ||
+        character.species === speciesFilter.value)
+  );
 
-  filtered = filtered.filter((character) => {
-    if (statusFilter.value === "all") {
-      return true;
-    }
-    return character.status === statusFilter.value;
-  });
+  // filtered = filtered.filter((character) => {
+  //   if (genderFilter.value === "all") {
+  //     return true;
+  //   }
+  //   return character.gender === genderFilter.value;
+  // });
 
-  filtered = filtered.filter((character) => {
-    if (speciesFilter.value === "all") {
-      return true;
-    }
-    return character.species === speciesFilter.value;
-  });
+  // filtered = filtered.filter((character) => {
+  //   if (statusFilter.value === "all") {
+  //     return true;
+  //   }
+  //   return character.status === statusFilter.value;
+  // });
+
+  // filtered = filtered.filter((character) => {
+  //   if (speciesFilter.value === "all") {
+  //     return true;
+  //   }
+  //   return character.species === speciesFilter.value;
+  // });
 
   filtered = filtered.filter((character) =>
     character.name.toLowerCase().includes(search.value.toLowerCase())

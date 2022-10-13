@@ -20,8 +20,6 @@ const SELECT_ALL_TEXT = "Select all";
 /* Variables */
 let chosenIds = [];
 
-
-
 /* ADD/REMOVE CARDS */
 
 const printCards = (characters) => {
@@ -170,7 +168,8 @@ const cleanChosenContainer = () => {
   chosenContainer.innerHTML = "";
 };
 
-const createChosenCards = (chosenIds) => {removeCharacter
+const createChosenCards = (chosenIds) => {
+  removeCharacter;
   cleanChosenContainer();
   chosenIds.forEach((chosenId) => {
     const chosen = characters.find((character) => chosenId === character.id);
@@ -225,6 +224,13 @@ const addEventListenerToRemoveButtons = () => {
   });
 };
 
+const addEventListenerToSelectsElements = () => {
+  const selects = document.querySelectorAll("select");
+  selects.forEach((select) => {
+    select.addEventListener("change", () => createCards());
+  });
+};
+
 // CREATE CARDS
 const createCards = (characterToRemove) => {
   cleanCardContainer();
@@ -267,14 +273,18 @@ const createCards = (characterToRemove) => {
     character.name.toLowerCase().includes(search.value.toLowerCase())
   );
 
-  console.log("chosenIds",chosenIds);
+  console.log("chosenIds", chosenIds);
 
-  filtered.filter((character) => {
-    !chosenIds.includes(character.id);
-  });
+  if (chosenIds.length > 0) {
+    filtered = filtered.filter(
+      (character) => !chosenIds.includes(character.id)
+    );
+  }
 
-  if(characterToRemove){
-    filtered = filtered.filter((character) => character.id != characterToRemove)
+  if (characterToRemove) {
+    filtered = filtered.filter(
+      (character) => character.id != characterToRemove
+    );
   }
 
   if (filtered.length === 0) {
@@ -290,8 +300,6 @@ const createCards = (characterToRemove) => {
   printCards(filtered);
   addEventListenerToChooseButtons();
   addEventListenerToRemoveButtons();
-
-  
 };
 createCards();
 // printCards(characters);
@@ -308,3 +316,5 @@ search.addEventListener("input", createCards);
 for (const filter in filterMap) {
   filterMap[filter].addEventListener("input", createCards);
 }
+
+addEventListenerToSelectsElements();

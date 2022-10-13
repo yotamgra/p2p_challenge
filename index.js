@@ -19,6 +19,7 @@ const SELECT_ALL_TEXT = "Select all";
 
 /* Variables */
 let chosenIds = [];
+let sumChosenPoints = 0;
 
 /* ADD/REMOVE CARDS */
 
@@ -199,14 +200,38 @@ const createChosenCards = (chosenIds) => {
   });
 };
 
+const findCharacterById = (id) => {
+  console.log(+id);
+  let chosenCharacter;
+  characters.forEach(character => {
+    console.log("character.id",character.id);
+    if(character.id === +id ){
+      console.log("inside if");
+      console.log("character",character);
+      chosenCharacter = character;
+    }
+  })
+  return chosenCharacter;
+}
+
 const chooseCharacter = (e) => {
   if(chosenIds.length === 5){
     alert("The team should contain maximum 5 characters")
     return;
   }
+  
+  const chosenCharacter = findCharacterById(e.target.id)
+  console.log("sumChosenPoints",sumChosenPoints);
+  console.log("chosenCharacter",chosenCharacter);
+  
+  if(sumChosenPoints + chosenCharacter.points > 10000){
+    alert("The sum of the characters' points can be a maximum of 10000")
+    return;
+  }
   chosenIds.push(parseInt(e.target.id));
+  sumChosenPoints += chosenCharacter.points;
   createChosenCards(chosenIds);
-  //  remove the choosen character from the list
+  //  remove the chosen character from the list
   // filtered = filtered.filter((character) => character.id != e.target.id);
   // printCards(filtered);
   createCards(e.target.id);

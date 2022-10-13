@@ -200,6 +200,10 @@ const createChosenCards = (chosenIds) => {
 };
 
 const chooseCharacter = (e) => {
+  if(chosenIds.length === 5){
+    alert("The team should contain maximum 5 characters")
+    return;
+  }
   chosenIds.push(parseInt(e.target.id));
   createChosenCards(chosenIds);
   //  remove the choosen character from the list

@@ -334,6 +334,7 @@ createCards();
 // printCards(characters);
 
 const removeCharacter = (e) => {
+  sumChosenPoints = sumChosenPoints - findCharacterById(e.target.id).points;
   chosenIds = chosenIds.filter(
     (chosenId) => chosenId !== parseInt(e.target.id)
   );

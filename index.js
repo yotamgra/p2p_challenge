@@ -20,7 +20,7 @@ const SELECT_ALL_TEXT = "Select all";
 /* Variables */
 let chosenIds = [];
 
-let filtered = [...characters];
+
 
 /* ADD/REMOVE CARDS */
 
@@ -170,7 +170,7 @@ const cleanChosenContainer = () => {
   chosenContainer.innerHTML = "";
 };
 
-const createChosenCards = (chosenIds) => {
+const createChosenCards = (chosenIds) => {removeCharacter
   cleanChosenContainer();
   chosenIds.forEach((chosenId) => {
     const chosen = characters.find((character) => chosenId === character.id);
@@ -204,9 +204,9 @@ const chooseCharacter = (e) => {
   chosenIds.push(parseInt(e.target.id));
   createChosenCards(chosenIds);
   //  remove the choosen character from the list
-  filtered = filtered.filter((character) => character.id != e.target.id);
-  printCards(filtered);
-  createCards();
+  // filtered = filtered.filter((character) => character.id != e.target.id);
+  // printCards(filtered);
+  createCards(e.target.id);
 };
 
 // EVENT LISTENERS
@@ -226,9 +226,11 @@ const addEventListenerToRemoveButtons = () => {
 };
 
 // CREATE CARDS
-const createCards = () => {
+const createCards = (characterToRemove) => {
   cleanCardContainer();
   // console.log("inside createCards function");
+
+  let filtered = [...characters];
 
   filtered = filtered.filter(
     (character) =>
@@ -265,9 +267,15 @@ const createCards = () => {
     character.name.toLowerCase().includes(search.value.toLowerCase())
   );
 
+  console.log("chosenIds",chosenIds);
+
   filtered.filter((character) => {
     !chosenIds.includes(character.id);
   });
+
+  if(characterToRemove){
+    filtered = filtered.filter((character) => character.id != characterToRemove)
+  }
 
   if (filtered.length === 0) {
     const textElement = document.createElement("p");
@@ -282,9 +290,11 @@ const createCards = () => {
   printCards(filtered);
   addEventListenerToChooseButtons();
   addEventListenerToRemoveButtons();
+
+  
 };
 createCards();
-printCards(characters);
+// printCards(characters);
 
 const removeCharacter = (e) => {
   chosenIds = chosenIds.filter(

@@ -19,10 +19,12 @@ const SELECT_ALL_TEXT = "Select all";
 
 /* Variables */
 let chosenIds = [];
+let sumChosenPoints = 0;
 
 /* ADD/REMOVE CARDS */
 
 const printCards = (characters) => {
+  // console.log("inside printCards function");
   characters.forEach((character) => {
     const { id, name, image, status, species, gender, points } = character;
     const card = document.createElement("div");
@@ -106,6 +108,8 @@ const createOptionNodes = (filterOptions, appendToElement) => {
   selectAllOption.setAttribute("value", "all");
   const optionText = document.createTextNode(SELECT_ALL_TEXT);
   selectAllOption.appendChild(optionText);
+  // console.log("selectAllOption", selectAllOption);
+  // console.log("appendToElement", appendToElement);
   appendToElement.appendChild(selectAllOption);
 
   filterOptions.forEach((option) => {
@@ -121,9 +125,39 @@ const createOptionNodes = (filterOptions, appendToElement) => {
 
 const createOptions = () => {
   const options = getOptions();
-  for (const optionType in options) {
-    createOptionNodes(options[optionType], filterMap[optionType]);
-  }
+
+  let genderOptions = [];
+  let statusOptions = [];
+  let speciesOptions = [];
+
+  options.gender.forEach((option) => {
+    if (!genderOptions.includes(option)) {
+      genderOptions.push(option);
+    }
+  });
+
+  options.status.forEach((option) => {
+    if (!statusOptions.includes(option)) {
+      statusOptions.push(option);
+    }
+  });
+
+  options.species.forEach((option) => {
+    if (!speciesOptions.includes(option)) {
+      speciesOptions.push(option);
+    }
+  });
+
+  createOptionNodes(genderOptions, filterMap.gender);
+  createOptionNodes(statusOptions, filterMap.status);
+  createOptionNodes(speciesOptions, filterMap.species);
+
+  // for (const optionType in options) {
+  //   console.log("optionType ",optionType);
+  //   console.log("options[optionType]",options[optionType]);
+  //   console.log("filterMap[optionType]", filterMap[optionType]);
+  //   createOptionNodes(options[optionType], filterMap[optionType]);
+  // }
 };
 
 createOptions();
@@ -136,6 +170,7 @@ const cleanChosenContainer = () => {
 };
 
 const createChosenCards = (chosenIds) => {
+  removeCharacter;
   cleanChosenContainer();
   chosenIds.forEach((chosenId) => {
     const chosen = characters.find((character) => chosenId === character.id);
@@ -157,11 +192,49 @@ const createChosenCards = (chosenIds) => {
     button.appendChild(textButton);
 
     card.appendChild(avatar);
+    chooseCharacter;
     card.appendChild(textElement);
     card.appendChild(button);
 
     chosenContainer.appendChild(card);
   });
+};
+
+const findCharacterById = (id) => {
+  console.log(+id);
+  let chosenCharacter;
+  characters.forEach(character => {
+    console.log("character.id",character.id);
+    if(character.id === +id ){
+      console.log("inside if");
+      console.log("character",character);
+      chosenCharacter = character;
+    }
+  })
+  return chosenCharacter;
+}
+
+const chooseCharacter = (e) => {
+  if(chosenIds.length === 5){
+    alert("The team should contain maximum 5 characters")
+    return;
+  }
+  
+  const chosenCharacter = findCharacterById(e.target.id)
+  console.log("sumChosenPoints",sumChosenPoints);
+  console.log("chosenCharacter",chosenCharacter);
+  
+  if(sumChosenPoints + chosenCharacter.points > 10000){
+    alert("The sum of the characters' points can be a maximum of 10000")
+    return;
+  }
+  chosenIds.push(parseInt(e.target.id));
+  sumChosenPoints += chosenCharacter.points;
+  createChosenCards(chosenIds);
+  //  remove the chosen character from the list
+  // filtered = filtered.filter((character) => character.id != e.target.id);
+  // printCards(filtered);
+  createCards(e.target.id);
 };
 
 // EVENT LISTENERS
@@ -174,36 +247,74 @@ const addEventListenerToChooseButtons = () => {
 
 const addEventListenerToRemoveButtons = () => {
   const chooseButtons = document.getElementsByClassName("remove-button");
+  console.log("chooseButtons", chooseButtons);
   Array.from(chooseButtons).forEach((button) => {
-    button.addEventListener("click", () => {});
+    button.addEventListener("click", removeCharacter);
+  });
+};
+
+const addEventListenerToSelectsElements = () => {
+  const selects = document.querySelectorAll("select");
+  selects.forEach((select) => {
+    select.addEventListener("change", () => createCards());
   });
 };
 
 // CREATE CARDS
-const createCards = () => {
+const createCards = (characterToRemove) => {
   cleanCardContainer();
+  // console.log("inside createCards function");
 
   let filtered = [...characters];
 
   filtered = filtered.filter(
-    (character) => character.gender === genderFilter.value
+    (character) =>
+      (genderFilter.value === "all" ||
+        character.gender === genderFilter.value) &&
+      (statusFilter.value === "all" ||
+        character.status === statusFilter.value) &&
+      (speciesFilter.value === "all" ||
+        character.species === speciesFilter.value)
   );
 
-  filtered = filtered.filter(
-    (character) => character.status === statusFilter.value
-  );
+  // filtered = filtered.filter((character) => {
+  //   if (genderFilter.value === "all") {
+  //     return true;
+  //   }
+  //   return character.gender === genderFilter.value;
+  // });
 
-  filtered = filtered.filter(
-    (character) => character.species === speciesFilter.value
-  );
+  // filtered = filtered.filter((character) => {
+  //   if (statusFilter.value === "all") {
+  //     return true;
+  //   }
+  //   return character.status === statusFilter.value;
+  // });
+
+  // filtered = filtered.filter((character) => {
+  //   if (speciesFilter.value === "all") {
+  //     return true;
+  //   }
+  //   return character.species === speciesFilter.value;
+  // });
 
   filtered = filtered.filter((character) =>
     character.name.toLowerCase().includes(search.value.toLowerCase())
   );
 
-  filtered.filter((character) => {
-    !chosenIds.includes(character.id);
-  });
+  console.log("chosenIds", chosenIds);
+
+  if (chosenIds.length > 0) {
+    filtered = filtered.filter(
+      (character) => !chosenIds.includes(character.id)
+    );
+  }
+
+  if (characterToRemove) {
+    filtered = filtered.filter(
+      (character) => character.id != characterToRemove
+    );
+  }
 
   if (filtered.length === 0) {
     const textElement = document.createElement("p");
@@ -214,19 +325,16 @@ const createCards = () => {
     addEventListenerToRemoveButtons();
     return;
   }
-
-  printCards(characters);
+  // console.log("inside createCards function before calling  printCards");
+  printCards(filtered);
   addEventListenerToChooseButtons();
   addEventListenerToRemoveButtons();
 };
-
-const chooseCharacter = (e) => {
-  chosenIds.push(parseInt(e.target.id));
-  createChosenCards(chosenIds);
-  createCards();
-};
+createCards();
+// printCards(characters);
 
 const removeCharacter = (e) => {
+  sumChosenPoints = sumChosenPoints - findCharacterById(e.target.id).points;
   chosenIds = chosenIds.filter(
     (chosenId) => chosenId !== parseInt(e.target.id)
   );
@@ -238,3 +346,5 @@ search.addEventListener("input", createCards);
 for (const filter in filterMap) {
   filterMap[filter].addEventListener("input", createCards);
 }
+
+addEventListenerToSelectsElements();
